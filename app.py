@@ -216,17 +216,17 @@ else:
 
     fig1, ax1 = plt.subplots(figsize=(3.5, 1.5))
 
-    ax1.plot(v_12, P_12, color="blue", label="1-2 Compresión", fontsize=8)
+    ax1.plot(v_12, P_12, color="blue", label="1-2 Compresión")
     
     if ciclo == "Otto":
-        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (V cte)", fontsize=8)
+        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (V cte)")
     elif ciclo == "Diesel":
-        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (P cte)", fontsize=8)
+        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (P cte)")
     else:
-        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento mixto", fontsize=8)
+        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento mixto")
 
-    ax1.plot(v_34, P_34, color="green", label="3-4 Expansión", fontsize=8)
-    ax1.plot([v4, v1], [P4, P1], color="purple", label="4-1 Rechazo calor", fontsize=8)
+    ax1.plot(v_34, P_34, color="green", label="3-4 Expansión")
+    ax1.plot([v4, v1], [P4, P1], color="purple", label="4-1 Rechazo calor")
 
     v_points = [v1, v2, v3, v4]
     P_points = [P1, P2, P3, P4]
@@ -257,10 +257,10 @@ else:
 
     fig2, ax2 = plt.subplots(figsize=(3.5, 1.5))
 
-    ax2.plot([s1, s2], [T1, T2], color="blue", label="1-2 Compresión", fontsize=8)
-    ax2.plot([s2, s3], [T2, T3], color="red", label="2-3 Calentamiento", fontsize=8)
-    ax2.plot([s3, s4], [T3, T4], color="green", label="3-4 Expansión", fontsize=8)
-    ax2.plot([s4, s1], [T4, T1], color="purple", label="4-1 Rechazo calor", fontsize=8)
+    ax2.plot([s1, s2], [T1, T2], color="blue", label="1-2 Compresión")
+    ax2.plot([s2, s3], [T2, T3], color="red", label="2-3 Calentamiento")
+    ax2.plot([s3, s4], [T3, T4], color="green", label="3-4 Expansión")
+    ax2.plot([s4, s1], [T4, T1], color="purple", label="4-1 Rechazo calor")
 
     ax2.scatter([s1, s2, s3, s4], [T1, T2, T3, T4], color="black")
 
