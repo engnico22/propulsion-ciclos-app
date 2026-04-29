@@ -12,30 +12,66 @@ st.set_page_config(page_title="TP Propulsión", layout="wide")
 menu = st.sidebar.selectbox("Navegación", ["Inicio", "Simulación"])
 
 # =========================
-# PORTADA (FIX DEFINITIVO)
+# PORTADA (LIMPIA Y LEGIBLE)
 # =========================
 
 if menu == "Inicio":
 
-    col1, col2, col3 = st.columns([1,2,1])
+    st.markdown(
+        """
+        <style>
+        .card {
+            max-width: 700px;
+            margin: 80px auto;
+            padding: 40px;
+            border-radius: 12px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
 
-    with col2:
-        st.markdown("## 📘 TP Nº1")
-        st.markdown("### DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS")
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-        st.markdown("---")
+        .subtitle {
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
 
-        st.markdown("### 👨‍🚀 Integrantes")
-        st.write("• Barbeito, Matias")
-        st.write("• Cavanes, Tomas Ezequiel")
-        st.write("• Lahan, Alberto Nicolas")
-        st.write("• Rodriguez Aguado, Jose Luis")
+        .section {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
-        st.markdown("---")
+    st.markdown(
+        """
+        <div class="card">
+            <div class="title">📘 TP Nº1</div>
+            <div class="subtitle">DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS</div>
 
-        st.markdown("### 🏫 Institución")
-        st.write("UTN Facultad Regional Haedo")
-        st.write("Cátedra: Propulsión")
+            <div class="section">
+                <b>Integrantes</b><br>
+                Barbeito, Matias<br>
+                Cavanes, Tomas Ezequiel<br>
+                Lahan, Alberto Nicolas<br>
+                Rodriguez Aguado, Jose Luis
+            </div>
+
+            <div class="section">
+                <b>UTN Facultad Regional Haedo</b><br>
+                Cátedra: Propulsión
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 # =========================
 # SIMULACION (SIN CAMBIOS)
@@ -44,6 +80,10 @@ if menu == "Inicio":
 else:
     st.title("🔧 Simulación de ciclos termodinámicos")
     st.markdown("## ⚙️ Configuración del problema")
+
+    # =========================
+    # ENTRADAS
+    # =========================
 
     st.sidebar.header("🌍 Condiciones ambientales")
     alt = st.sidebar.number_input("Altitud [m]", value=0.0)
@@ -67,16 +107,23 @@ else:
     rpm = st.sidebar.number_input("RPM", value=3000)
     afr = st.sidebar.number_input("Relación aire-combustible", value=14.7)
 
+    # =========================
+    # CALCULOS
+    # =========================
+
     R = 287
     cv = R / (gamma - 1)
+
     v1 = R * T1 / P1
 
     if ciclo == "Otto":
         v2 = v1 / r
         T2 = T1 * r**(gamma - 1)
         P2 = P1 * r**gamma
+
         v3 = v2
         P3 = P2 * T3 / T2
+
         v4 = v1
         T4 = T3 * r**(-(gamma - 1))
         P4 = P3 * r**(-gamma)
@@ -85,31 +132,47 @@ else:
         v2 = v1 / r
         T2 = T1 * r**(gamma - 1)
         P2 = P1 * r**gamma
+
         v3 = v2 * rc
         T3 = T2 * rc
         P3 = P2
+
         v4 = v1
         T4 = T3 * (v3 / v1)**(gamma - 1)
         P4 = P3 * (v3 / v1)**gamma
 
-    else:
+    else:  # Sabathé
         v2 = v1 / r
         T2 = T1 * r**(gamma - 1)
         P2 = P1 * r**gamma
+
         v3 = v2 * rc
         P3 = P2 * (T3 / T2)
+
         v4 = v1
         T4 = T3 * (v3 / v1)**(gamma - 1)
         P4 = P3 * (v3 / v1)**gamma
+
+    # =========================
+    # ENERGIA
+    # =========================
 
     qin = cv * (T3 - T2)
     qout = cv * (T4 - T1)
     wnet = qin - qout
     eta = wnet / qin
 
+    # =========================
+    # PARAMETROS MOTOR
+    # =========================
+
     Pmax = max(P1, P2, P3, P4)
     Tmax = max(T1, T2, T3, T4)
     pme = wnet / (v1 - v2)
+
+    # =========================
+    # TABLA
+    # =========================
 
     df = pd.DataFrame({
         "Estado": [1, 2, 3, 4],
@@ -135,4 +198,87 @@ else:
         st.write(f"Temperatura máxima: {Tmax:.0f} K")
         st.write(f"Presión media efectiva: {pme:.0f} Pa")
 
-    # (TODO lo demás de tu simulación queda EXACTAMENTE igual)
+    # =========================
+    # P-v
+    # =========================
+
+    v_12 = np.linspace(v1, v2, 100)
+    P_12 = P1 * (v1 / v_12)**gamma
+
+    v_34 = np.linspace(v3, v4, 100)
+    P_34 = P3 * (v3 / v_34)**gamma
+
+    fig1, ax1 = plt.subplots()
+
+    ax1.plot(v_12, P_12, color="blue", label="1-2 Compresión")
+    
+    if ciclo == "Otto":
+        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (V cte)")
+    elif ciclo == "Diesel":
+        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (P cte)")
+    else:
+        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento mixto")
+
+    ax1.plot(v_34, P_34, color="green", label="3-4 Expansión")
+    ax1.plot([v4, v1], [P4, P1], color="purple", label="4-1 Rechazo calor")
+
+    v_points = [v1, v2, v3, v4]
+    P_points = [P1, P2, P3, P4]
+
+    ax1.scatter(v_points, P_points, color="black")
+
+    for i, (v, P) in enumerate(zip(v_points, P_points), start=1):
+        ax1.text(v, P, f"{i}")
+
+    ax1.set_xlabel("Volumen específico [m³/kg]")
+    ax1.set_ylabel("Presión [Pa]")
+    ax1.set_title("Diagrama P-v")
+    ax1.legend()
+
+    st.pyplot(fig1)
+
+    # =========================
+    # T-s
+    # =========================
+
+    def ds(Ta, Tb, va, vb):
+        return cv*np.log(Tb/Ta) + R*np.log(vb/va)
+
+    s1 = 0
+    s2 = s1 + ds(T1, T2, v1, v2)
+    s3 = s2 + ds(T2, T3, v2, v3)
+    s4 = s3 + ds(T3, T4, v3, v4)
+
+    fig2, ax2 = plt.subplots()
+
+    ax2.plot([s1, s2], [T1, T2], color="blue", label="1-2 Compresión")
+    ax2.plot([s2, s3], [T2, T3], color="red", label="2-3 Calentamiento")
+    ax2.plot([s3, s4], [T3, T4], color="green", label="3-4 Expansión")
+    ax2.plot([s4, s1], [T4, T1], color="purple", label="4-1 Rechazo calor")
+
+    ax2.scatter([s1, s2, s3, s4], [T1, T2, T3, T4], color="black")
+
+    for i, (s, T) in enumerate(zip([s1, s2, s3, s4], [T1, T2, T3, T4]), start=1):
+        ax2.text(s, T, f"{i}")
+
+    ax2.set_xlabel("Entropía [J/kgK]")
+    ax2.set_ylabel("Temperatura [K]")
+    ax2.set_title("Diagrama T-s")
+    ax2.legend()
+
+    st.pyplot(fig2)
+
+    # =========================
+    # CSV
+    # =========================
+
+    st.subheader("📥 Exportar resultados")
+
+    csv = df.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        label="Descargar CSV",
+        data=csv,
+        file_name="resultados.csv",
+        mime="text/csv"
+    )
