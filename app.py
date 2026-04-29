@@ -24,6 +24,7 @@ if menu == "Inicio":
             background-image: url("https://modatek.co.uk/wp-content/uploads/2023/07/Cosworth-CA2010-Display-Engine-6.jpg");
             background-size: 60%;
             background-position: center;
+            background-repeat: no-repeat;
             background-attachment: fixed;
         }
 
