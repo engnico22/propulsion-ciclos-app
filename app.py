@@ -12,7 +12,7 @@ st.set_page_config(page_title="TP Propulsión", layout="wide")
 menu = st.sidebar.selectbox("Navegación", ["Inicio", "Simulación"])
 
 # =========================
-# PORTADA MEJORADA (FIX HTML)
+# PORTADA MEJORADA
 # =========================
 
 if menu == "Inicio":
@@ -45,18 +45,11 @@ if menu == "Inicio":
 
         .subtitle {
             font-size: 22px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        .section-title {
-            font-size: 20px;
-            font-weight: bold;
+        .section {
             margin-top: 20px;
-        }
-
-        .list {
-            margin-top: 10px;
-            line-height: 1.6;
         }
         </style>
         """,
@@ -69,17 +62,16 @@ if menu == "Inicio":
             <div class="title">📘 TP Nº1</div>
             <div class="subtitle">DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS</div>
 
-            <div class="section-title">Integrantes</div>
-            <div class="list">
+            <div class="section">
+                <b>Integrantes</b><br>
                 Barbeito, Matias<br>
                 Cavanes, Tomas Ezequiel<br>
                 Lahan, Alberto Nicolas<br>
                 Rodriguez Aguado, Jose Luis
             </div>
 
-            <div class="section-title">Institución</div>
-            <div class="list">
-                UTN Facultad Regional Haedo<br>
+            <div class="section">
+                <b>UTN Facultad Regional Haedo</b><br>
                 Cátedra: Propulsión
             </div>
         </div>
@@ -127,8 +119,10 @@ else:
         v2 = v1 / r
         T2 = T1 * r**(gamma - 1)
         P2 = P1 * r**gamma
+
         v3 = v2
         P3 = P2 * T3 / T2
+
         v4 = v1
         T4 = T3 * r**(-(gamma - 1))
         P4 = P3 * r**(-gamma)
@@ -137,9 +131,11 @@ else:
         v2 = v1 / r
         T2 = T1 * r**(gamma - 1)
         P2 = P1 * r**gamma
+
         v3 = v2 * rc
         T3 = T2 * rc
         P3 = P2
+
         v4 = v1
         T4 = T3 * (v3 / v1)**(gamma - 1)
         P4 = P3 * (v3 / v1)**gamma
@@ -148,8 +144,10 @@ else:
         v2 = v1 / r
         T2 = T1 * r**(gamma - 1)
         P2 = P1 * r**gamma
+
         v3 = v2 * rc
         P3 = P2 * (T3 / T2)
+
         v4 = v1
         T4 = T3 * (v3 / v1)**(gamma - 1)
         P4 = P3 * (v3 / v1)**gamma
@@ -185,6 +183,20 @@ else:
         st.write(f"T máx: {Tmax:.0f} K")
         st.write(f"PME: {pme:.0f} Pa")
 
-    # EXPORT CSV
+    # P-v
+    v_12 = np.linspace(v1, v2, 100)
+    P_12 = P1 * (v1 / v_12)**gamma
+    v_34 = np.linspace(v3, v4, 100)
+    P_34 = P3 * (v3 / v_34)**gamma
+
+    fig1, ax1 = plt.subplots()
+    ax1.plot(v_12, P_12, label="1-2 Compresión")
+    ax1.plot([v2, v3], [P2, P3], label="2-3 Calentamiento")
+    ax1.plot(v_34, P_34, label="3-4 Expansión")
+    ax1.plot([v4, v1], [P4, P1], label="4-1 Rechazo")
+    ax1.legend()
+    st.pyplot(fig1)
+
+    # CSV
     csv = df.to_csv(index=False).encode("utf-8")
     st.download_button("Descargar CSV", csv, "resultados.csv", "text/csv")
