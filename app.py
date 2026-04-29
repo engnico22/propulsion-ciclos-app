@@ -22,7 +22,7 @@ if menu == "Inicio":
         <style>
         .stApp {
             background-image: url("https://modatek.co.uk/wp-content/uploads/2023/07/Cosworth-CA2010-Display-Engine-6.jpg");
-            background-size: 80%;
+            background-size: 50%;
             background-position: center;
             background-attachment: fixed;
         }
