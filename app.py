@@ -239,7 +239,7 @@ else:
     ax1.set_xlabel("Volumen específico [m³/kg]")
     ax1.set_ylabel("Presión [Pa]")
     ax1.set_title("Diagrama P-v")
-    ax1.legend(fontsize=3)
+    ax1.legend(fontsize=6)
 
     st.pyplot(fig1, use_container_width=False)
 
@@ -270,7 +270,7 @@ else:
     ax2.set_xlabel("Entropía [J/kgK]")
     ax2.set_ylabel("Temperatura [K]")
     ax2.set_title("Diagrama T-s")
-    ax2.legend()
+    ax2.legend(fontsize=6)
 
     st.pyplot(fig2, use_container_width=False)
 
