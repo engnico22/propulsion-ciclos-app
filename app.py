@@ -241,7 +241,7 @@ else:
     ax1.set_title("Diagrama P-v")
     ax1.legend()
 
-    st.pyplot(fig1)
+    st.pyplot(fig1, use_container_width=False)
 
     # =========================
     # T-s
@@ -272,7 +272,7 @@ else:
     ax2.set_title("Diagrama T-s")
     ax2.legend()
 
-    st.pyplot(fig2)
+    st.pyplot(fig2, use_container_width=False)
 
     # =========================
     # CSV
