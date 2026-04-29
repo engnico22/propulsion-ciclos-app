@@ -12,7 +12,7 @@ st.set_page_config(page_title="TP Propulsión", layout="wide")
 menu = st.sidebar.selectbox("Navegación", ["Inicio", "Simulación"])
 
 # =========================
-# PORTADA (ARREGLADA)
+# PORTADA (LIMPIA Y LEGIBLE)
 # =========================
 
 if menu == "Inicio":
@@ -20,41 +20,58 @@ if menu == "Inicio":
     st.markdown(
         """
         <style>
-        .stApp {
-            background-image: url("https://modatek.co.uk/wp-content/uploads/2023/07/Cosworth-CA2010-Display-Engine-6.jpg");
-            background-size: cover;
-            background-position: center;
+        .card {
+            max-width: 700px;
+            margin: 80px auto;
+            padding: 40px;
+            border-radius: 12px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            text-align: center;
         }
 
-        .recuadro {
-            background-color: rgba(0, 0, 0, 0.65); /* fondo oscuro semitransparente */
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 700px;
-            margin: 100px auto;
-            color: white;
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+
+        .section {
+            margin-top: 20px;
+            font-size: 16px;
         }
         </style>
         """,
         unsafe_allow_html=True
     )
 
-    st.markdown('<div class="recuadro">', unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="card">
+            <div class="title">📘 TP Nº1</div>
+            <div class="subtitle">DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS</div>
 
-    st.title("📘 TP Nº1")
-    st.header("DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS")
+            <div class="section">
+                <b>Integrantes</b><br>
+                Barbeito, Matias<br>
+                Cavanes, Tomas Ezequiel<br>
+                Lahan, Alberto Nicolas<br>
+                Rodriguez Aguado, Jose Luis
+            </div>
 
-    st.subheader("👨‍🚀 Integrantes")
-    st.write("Barbeito, Matias")
-    st.write("Cavanes, Tomas Ezequiel")
-    st.write("Lahan, Alberto Nicolas")
-    st.write("Rodriguez Aguado, Jose Luis")
-
-    st.markdown("---")
-    st.markdown("**UTN Facultad Regional Haedo**")
-    st.markdown("Cátedra: Propulsión")
-
-    st.markdown('</div>', unsafe_allow_html=True)
+            <div class="section">
+                <b>UTN Facultad Regional Haedo</b><br>
+                Cátedra: Propulsión
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 # =========================
 # SIMULACION (SIN CAMBIOS)
