@@ -214,7 +214,7 @@ else:
     v_34 = np.linspace(v3, v4, 100)
     P_34 = P3 * (v3 / v_34)**gamma
 
-    fig1, ax1 = plt.subplots(figsize=(5, 3))
+    fig1, ax1 = plt.subplots(figsize=(2.5, 0.5))
 
     ax1.plot(v_12, P_12, color="blue", label="1-2 Compresión")
     
@@ -255,7 +255,7 @@ else:
     s3 = s2 + ds(T2, T3, v2, v3)
     s4 = s3 + ds(T3, T4, v3, v4)
 
-    fig2, ax2 = plt.subplots(figsize=(5, 3))
+    fig2, ax2 = plt.subplots(figsize=(2.5, 0.5))
 
     ax2.plot([s1, s2], [T1, T2], color="blue", label="1-2 Compresión")
     ax2.plot([s2, s3], [T2, T3], color="red", label="2-3 Calentamiento")
