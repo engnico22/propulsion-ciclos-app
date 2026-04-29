@@ -6,10 +6,79 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="TP Propulsión", layout="wide")
 
 # =========================
+# FUNCION DE CALCULO
+# =========================
+
+def calcular_ciclo(ciclo, T1, P1, r, gamma, T3, rc):
+    R = 287
+    cv = R / (gamma - 1)
+    v1 = R * T1 / P1
+
+    if ciclo == "Otto":
+        v2 = v1 / r
+        T2 = T1 * r**(gamma - 1)
+        P2 = P1 * r**gamma
+
+        v3 = v2
+        P3 = P2 * T3 / T2
+
+        v4 = v1
+        T4 = T3 * r**(-(gamma - 1))
+        P4 = P3 * r**(-gamma)
+
+    elif ciclo == "Diesel":
+        v2 = v1 / r
+        T2 = T1 * r**(gamma - 1)
+        P2 = P1 * r**gamma
+
+        v3 = v2 * rc
+        T3 = T2 * rc
+        P3 = P2
+
+        v4 = v1
+        T4 = T3 * (v3 / v1)**(gamma - 1)
+        P4 = P3 * (v3 / v1)**gamma
+
+    else:  # Sabathé
+        v2 = v1 / r
+        T2 = T1 * r**(gamma - 1)
+        P2 = P1 * r**gamma
+
+        v3 = v2 * rc
+        P3 = P2 * (T3 / T2)
+
+        v4 = v1
+        T4 = T3 * (v3 / v1)**(gamma - 1)
+        P4 = P3 * (v3 / v1)**gamma
+
+    return v1, v2, v3, v4, P1, P2, P3, P4, T1, T2, T3, T4
+
+
+# =========================
 # MENU
 # =========================
 
-menu = st.sidebar.selectbox("Navegación", ["Inicio", "Simulación"])
+menu = st.sidebar.selectbox("Navegación", ["Inicio", "Simulación", "Gráficos"])
+
+# =========================
+# SIDEBAR (PARÁMETROS)
+# =========================
+
+st.sidebar.header("🌍 Condiciones ambientales")
+alt = st.sidebar.number_input("Altitud [m]", value=0.0)
+T1 = st.sidebar.number_input("Temperatura [K]", value=288.0)
+P1 = st.sidebar.number_input("Presión [Pa]", value=101325.0)
+
+st.sidebar.header("🔥 Parámetros del ciclo")
+ciclo = st.sidebar.selectbox("Tipo de ciclo", ["Otto", "Diesel", "Sabathé"])
+r = st.sidebar.slider("Relación de compresión", 5.0, 25.0, 12.0)
+gamma = st.sidebar.slider("Gamma (γ)", 1.1, 1.67, 1.4)
+T3 = st.sidebar.slider("Temperatura máxima [K]", 1000.0, 3500.0, 2800.0)
+
+if ciclo in ["Diesel", "Sabathé"]:
+    rc = st.sidebar.slider("Relación de corte", 1.0, 5.0, 2.0)
+else:
+    rc = None
 
 # =========================
 # PORTADA
@@ -59,11 +128,6 @@ if menu == "Inicio":
             font-size: 20px;
             margin-bottom: 25px;
         }
-
-        .section {
-            margin-top: 20px;
-            font-size: 16px;
-        }
         </style>
         """,
         unsafe_allow_html=True
@@ -75,17 +139,13 @@ if menu == "Inicio":
     <div class="title">📘 TP Nº1</div>
     <div class="subtitle">DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS</div>
 
-    
-        Barbeito, Matías Nicolás
-        Cavanes, Tomás Ezequiel
-        Lahan, Alberto Nicolás
-        Rodríguez Aguado, José Luis
+    Barbeito, Matías Nicolás <br>
+    Cavanes, Tomás Ezequiel <br>
+    Lahan, Alberto Nicolás <br>
+    Rodríguez Aguado, José Luis <br><br>
 
-
-
-        UTN Facultad Regional Haedo
-        Cátedra: Propulsión
-    
+    UTN Facultad Regional Haedo <br>
+    Cátedra: Propulsión
 </div>
 """,
         unsafe_allow_html=True
@@ -95,81 +155,16 @@ if menu == "Inicio":
 # SIMULACION
 # =========================
 
-else:
+elif menu == "Simulación":
+
     st.title("🔧 Simulación de ciclos termodinámicos")
-    st.markdown("## ⚙️ Configuración del problema")
 
-    # =========================
-    # ENTRADAS
-    # =========================
-
-    st.sidebar.header("🌍 Condiciones ambientales")
-    alt = st.sidebar.number_input("Altitud [m]", value=0.0)
-    T1 = st.sidebar.number_input("Temperatura [K]", value=288.0)
-    P1 = st.sidebar.number_input("Presión [Pa]", value=101325.0)
-
-    st.sidebar.header("🔥 Parámetros del ciclo")
-    ciclo = st.sidebar.selectbox("Tipo de ciclo", ["Otto", "Diesel", "Sabathé"])
-    r = st.sidebar.slider("Relación de compresión", 5.0, 25.0, 12.0)
-    gamma = st.sidebar.slider("Gamma (γ)", 1.1, 1.67, 1.4)
-    T3 = st.sidebar.slider("Temperatura máxima [K]", 1000.0, 3500.0, 2800.0)
-
-    if ciclo in ["Diesel", "Sabathé"]:
-        rc = st.sidebar.slider("Relación de corte", 1.0, 5.0, 2.0)
-    else:
-        rc = None
-
-    st.sidebar.header("🏎️ Motor")
-    cilindrada = st.sidebar.number_input("Cilindrada [L]", value=2.0)
-    n_cil = st.sidebar.number_input("Número de cilindros", value=4)
-    rpm = st.sidebar.number_input("RPM", value=3000)
-    afr = st.sidebar.number_input("Relación aire-combustible", value=14.7)
-
-    # =========================
-    # CALCULOS
-    # =========================
+    v1, v2, v3, v4, P1, P2, P3, P4, T1, T2, T3, T4 = calcular_ciclo(
+        ciclo, T1, P1, r, gamma, T3, rc
+    )
 
     R = 287
     cv = R / (gamma - 1)
-
-    v1 = R * T1 / P1
-
-    if ciclo == "Otto":
-        v2 = v1 / r
-        T2 = T1 * r**(gamma - 1)
-        P2 = P1 * r**gamma
-
-        v3 = v2
-        P3 = P2 * T3 / T2
-
-        v4 = v1
-        T4 = T3 * r**(-(gamma - 1))
-        P4 = P3 * r**(-gamma)
-
-    elif ciclo == "Diesel":
-        v2 = v1 / r
-        T2 = T1 * r**(gamma - 1)
-        P2 = P1 * r**gamma
-
-        v3 = v2 * rc
-        T3 = T2 * rc
-        P3 = P2
-
-        v4 = v1
-        T4 = T3 * (v3 / v1)**(gamma - 1)
-        P4 = P3 * (v3 / v1)**gamma
-
-    else:
-        v2 = v1 / r
-        T2 = T1 * r**(gamma - 1)
-        P2 = P1 * r**gamma
-
-        v3 = v2 * rc
-        P3 = P2 * (T3 / T2)
-
-        v4 = v1
-        T4 = T3 * (v3 / v1)**(gamma - 1)
-        P4 = P3 * (v3 / v1)**gamma
 
     qin = cv * (T3 - T2)
     qout = cv * (T4 - T1)
@@ -186,9 +181,6 @@ else:
         "P [Pa]": [P1, P2, P3, P4],
         "v [m³/kg]": [v1, v2, v3, v4]
     })
-
-    st.markdown("---")
-    st.markdown("## 📊 Resultados del ciclo")
 
     col1, col2 = st.columns(2)
 
