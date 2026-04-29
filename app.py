@@ -12,7 +12,7 @@ st.set_page_config(page_title="TP Propulsión", layout="wide")
 menu = st.sidebar.selectbox("Navegación", ["Inicio", "Simulación"])
 
 # =========================
-# PORTADA (CORREGIDA)
+# PORTADA (ARREGLADA)
 # =========================
 
 if menu == "Inicio":
@@ -26,12 +26,12 @@ if menu == "Inicio":
             background-position: center;
         }
 
-        .box {
-            background-color: rgba(0, 0, 0, 0.7);
+        .recuadro {
+            background-color: rgba(0, 0, 0, 0.65); /* fondo oscuro semitransparente */
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 12px;
             max-width: 700px;
-            margin: 80px auto;
+            margin: 100px auto;
             color: white;
         }
         </style>
@@ -39,7 +39,7 @@ if menu == "Inicio":
         unsafe_allow_html=True
     )
 
-    st.markdown('<div class="box">', unsafe_allow_html=True)
+    st.markdown('<div class="recuadro">', unsafe_allow_html=True)
 
     st.title("📘 TP Nº1")
     st.header("DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS")
