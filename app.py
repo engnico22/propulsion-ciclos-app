@@ -16,12 +16,29 @@ menu = st.sidebar.selectbox("Navegación", ["Inicio", "Simulación"])
 # =========================
 
 if menu == "Inicio":
+
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background-image: url("https://modatek.co.uk/wp-content/uploads/2023/07/Cosworth-CA2010-Display-Engine-6.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+        .overlay {
+            background-color: rgba(255,255,255,0.75);
+            padding: 40px;
+            border-radius: 15px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown('<div class="overlay">', unsafe_allow_html=True)
+
     st.title("📘 TP Nº1")
     st.header("DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS")
-
-    st.image("https://modatek.co.uk/wp-content/uploads/2023/07/Cosworth-CA2010-Display-Engine-6.jpg")
-
-    st.markdown("---")
 
     st.subheader("👨‍🚀 Integrantes")
     st.write("Barbeito, Matias")
@@ -32,6 +49,8 @@ if menu == "Inicio":
     st.markdown("---")
     st.markdown("**UTN Facultad Regional Haedo**")
     st.markdown("Cátedra: Propulsión")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================
 # SIMULACION
@@ -159,7 +178,7 @@ else:
         st.write(f"Presión media efectiva: {pme:.0f} Pa")
 
     # =========================
-    # DIAGRAMA P-v
+    # P-v
     # =========================
 
     v_12 = np.linspace(v1, v2, 100)
@@ -170,27 +189,35 @@ else:
 
     fig1, ax1 = plt.subplots()
 
-    ax1.plot(v_12, P_12)
-    ax1.plot([v2, v3], [P2, P3])
-    ax1.plot(v_34, P_34)
-    ax1.plot([v4, v1], [P4, P1])
+    ax1.plot(v_12, P_12, color="blue", label="1-2 Compresión")
+    
+    if ciclo == "Otto":
+        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (V cte)")
+    elif ciclo == "Diesel":
+        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (P cte)")
+    else:
+        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento mixto")
+
+    ax1.plot(v_34, P_34, color="green", label="3-4 Expansión")
+    ax1.plot([v4, v1], [P4, P1], color="purple", label="4-1 Rechazo calor")
 
     v_points = [v1, v2, v3, v4]
     P_points = [P1, P2, P3, P4]
 
-    ax1.scatter(v_points, P_points)
+    ax1.scatter(v_points, P_points, color="black")
 
     for i, (v, P) in enumerate(zip(v_points, P_points), start=1):
-        ax1.text(v, P, f"{i}", fontsize=12)
+        ax1.text(v, P, f"{i}")
 
     ax1.set_xlabel("Volumen específico [m³/kg]")
     ax1.set_ylabel("Presión [Pa]")
     ax1.set_title("Diagrama P-v")
+    ax1.legend()
 
     st.pyplot(fig1)
 
     # =========================
-    # DIAGRAMA T-s REAL
+    # T-s
     # =========================
 
     def ds(Ta, Tb, va, vb):
@@ -201,23 +228,27 @@ else:
     s3 = s2 + ds(T2, T3, v2, v3)
     s4 = s3 + ds(T3, T4, v3, v4)
 
-    s_vals = [s1, s2, s3, s4, s1]
-    T_vals = [T1, T2, T3, T4, T1]
-
     fig2, ax2 = plt.subplots()
-    ax2.plot(s_vals, T_vals, marker='o')
 
-    for i, (s, T) in enumerate(zip(s_vals[:-1], T_vals[:-1]), start=1):
-        ax2.text(s, T, f"{i}", fontsize=12)
+    ax2.plot([s1, s2], [T1, T2], color="blue", label="1-2 Compresión")
+    ax2.plot([s2, s3], [T2, T3], color="red", label="2-3 Calentamiento")
+    ax2.plot([s3, s4], [T3, T4], color="green", label="3-4 Expansión")
+    ax2.plot([s4, s1], [T4, T1], color="purple", label="4-1 Rechazo calor")
+
+    ax2.scatter([s1, s2, s3, s4], [T1, T2, T3, T4], color="black")
+
+    for i, (s, T) in enumerate(zip([s1, s2, s3, s4], [T1, T2, T3, T4]), start=1):
+        ax2.text(s, T, f"{i}")
 
     ax2.set_xlabel("Entropía [J/kgK]")
     ax2.set_ylabel("Temperatura [K]")
     ax2.set_title("Diagrama T-s")
+    ax2.legend()
 
     st.pyplot(fig2)
 
     # =========================
-    # EXPORTAR CSV
+    # CSV
     # =========================
 
     st.subheader("📥 Exportar resultados")
