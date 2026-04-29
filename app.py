@@ -12,7 +12,7 @@ st.set_page_config(page_title="TP Propulsión", layout="wide")
 menu = st.sidebar.selectbox("Navegación", ["Inicio", "Simulación"])
 
 # =========================
-# PORTADA
+# PORTADA (CORREGIDA)
 # =========================
 
 if menu == "Inicio":
@@ -21,21 +21,25 @@ if menu == "Inicio":
         """
         <style>
         .stApp {
-            background-image: url("https://upload.wikimedia.org/wikipedia/commons/3/3a/V8_engine_block.jpg");
+            background-image: url("https://modatek.co.uk/wp-content/uploads/2023/07/Cosworth-CA2010-Display-Engine-6.jpg");
             background-size: cover;
             background-position: center;
         }
-        .overlay {
-            background-color: rgba(255,255,255,0.75);
-            padding: 40px;
-            border-radius: 15px;
+
+        .box {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 700px;
+            margin: 80px auto;
+            color: white;
         }
         </style>
         """,
         unsafe_allow_html=True
     )
 
-    st.markdown('<div class="overlay">', unsafe_allow_html=True)
+    st.markdown('<div class="box">', unsafe_allow_html=True)
 
     st.title("📘 TP Nº1")
     st.header("DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS")
@@ -53,7 +57,7 @@ if menu == "Inicio":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================
-# SIMULACION
+# SIMULACION (SIN CAMBIOS)
 # =========================
 
 else:
