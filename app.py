@@ -204,6 +204,8 @@ else:
         st.write(f"Temperatura máxima: {Tmax:.0f} K")
         st.write(f"Presión media efectiva: {pme:.0f} Pa")
 
+    
+    elif menu == "Gráficos":
     # =========================
     # P-v
     # =========================
