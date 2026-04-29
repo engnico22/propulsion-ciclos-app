@@ -19,7 +19,7 @@ if menu == "Inicio":
     st.title("📘 TP Nº1")
     st.header("DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS")
 
-    st.image("https://upload.wikimedia.org/wikipedia/commons/3/3a/V8_engine_block.jpg")
+    st.image("https://modatek.co.uk/wp-content/uploads/2023/07/Cosworth-CA2010-Display-Engine-6.jpg")
 
     st.markdown("---")
 
