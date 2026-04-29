@@ -12,7 +12,7 @@ st.set_page_config(page_title="TP Propulsión", layout="wide")
 menu = st.sidebar.selectbox("Navegación", ["Inicio", "Simulación"])
 
 # =========================
-# PORTADA (LIMPIA Y LEGIBLE)
+# PORTADA
 # =========================
 
 if menu == "Inicio":
@@ -20,12 +20,30 @@ if menu == "Inicio":
     st.markdown(
         """
         <style>
+        .stApp {
+            background-image: url("https://modatek.co.uk/wp-content/uploads/2023/07/Cosworth-CA2010-Display-Engine-6.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .stApp::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: -1;
+        }
+
         .card {
             max-width: 700px;
             margin: 80px auto;
             padding: 40px;
             border-radius: 12px;
-            background-color: #f5f5f5;
+            background-color: rgba(245, 245, 245, 0.9);
             border: 1px solid #ddd;
             text-align: center;
         }
@@ -58,10 +76,10 @@ if menu == "Inicio":
 
             <div class="section">
                 <b>Integrantes</b><br>
-                Barbeito, Matias Nicolas<br>
-                Cavanes, Tomas Ezequiel<br>
+                Barbeito, Matías Nicolás<br>
+                Cavanes, Tomás Ezequiel<br>
                 Lahan, Alberto Nicolas<br>
-                Rodriguez Aguado, Jose Luis
+                Rodriguez Aguado, José Luis
             </div>
 
             <div class="section">
@@ -74,7 +92,7 @@ if menu == "Inicio":
     )
 
 # =========================
-# SIMULACION (SIN CAMBIOS)
+# SIMULACION
 # =========================
 
 else:
@@ -210,22 +228,22 @@ else:
 
     fig1, ax1 = plt.subplots()
 
-    ax1.plot(v_12, P_12, color="blue", label="1-2 Compresión")
+    ax1.plot(v_12, P_12, label="1-2 Compresión")
     
     if ciclo == "Otto":
-        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (V cte)")
+        ax1.plot([v2, v3], [P2, P3], label="2-3 Calentamiento (V cte)")
     elif ciclo == "Diesel":
-        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento (P cte)")
+        ax1.plot([v2, v3], [P2, P3], label="2-3 Calentamiento (P cte)")
     else:
-        ax1.plot([v2, v3], [P2, P3], color="red", label="2-3 Calentamiento mixto")
+        ax1.plot([v2, v3], [P2, P3], label="2-3 Calentamiento mixto")
 
-    ax1.plot(v_34, P_34, color="green", label="3-4 Expansión")
-    ax1.plot([v4, v1], [P4, P1], color="purple", label="4-1 Rechazo calor")
+    ax1.plot(v_34, P_34, label="3-4 Expansión")
+    ax1.plot([v4, v1], [P4, P1], label="4-1 Rechazo calor")
 
     v_points = [v1, v2, v3, v4]
     P_points = [P1, P2, P3, P4]
 
-    ax1.scatter(v_points, P_points, color="black")
+    ax1.scatter(v_points, P_points)
 
     for i, (v, P) in enumerate(zip(v_points, P_points), start=1):
         ax1.text(v, P, f"{i}")
@@ -251,12 +269,12 @@ else:
 
     fig2, ax2 = plt.subplots()
 
-    ax2.plot([s1, s2], [T1, T2], color="blue", label="1-2 Compresión")
-    ax2.plot([s2, s3], [T2, T3], color="red", label="2-3 Calentamiento")
-    ax2.plot([s3, s4], [T3, T4], color="green", label="3-4 Expansión")
-    ax2.plot([s4, s1], [T4, T1], color="purple", label="4-1 Rechazo calor")
+    ax2.plot([s1, s2], [T1, T2], label="1-2 Compresión")
+    ax2.plot([s2, s3], [T2, T3], label="2-3 Calentamiento")
+    ax2.plot([s3, s4], [T3, T4], label="3-4 Expansión")
+    ax2.plot([s4, s1], [T4, T1], label="4-1 Rechazo calor")
 
-    ax2.scatter([s1, s2, s3, s4], [T1, T2, T3, T4], color="black")
+    ax2.scatter([s1, s2, s3, s4], [T1, T2, T3, T4])
 
     for i, (s, T) in enumerate(zip([s1, s2, s3, s4], [T1, T2, T3, T4]), start=1):
         ax2.text(s, T, f"{i}")
