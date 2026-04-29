@@ -239,7 +239,7 @@ else:
     ax1.set_xlabel("Volumen específico [m³/kg]")
     ax1.set_ylabel("Presión [Pa]")
     ax1.set_title("Diagrama P-v")
-    ax1.legend()
+    ax1.legend(fontsize=3)
 
     st.pyplot(fig1, use_container_width=False)
 
