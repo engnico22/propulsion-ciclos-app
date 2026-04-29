@@ -58,7 +58,7 @@ if menu == "Inicio":
 
             <div class="section">
                 <b>Integrantes</b><br>
-                Barbeito, Matias<br>
+                Barbeito, Matias Nicolas<br>
                 Cavanes, Tomas Ezequiel<br>
                 Lahan, Alberto Nicolas<br>
                 Rodriguez Aguado, Jose Luis
