@@ -74,18 +74,17 @@ if menu == "Inicio":
     <div class="title">📘 TP Nº1</div>
     <div class="subtitle">DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS</div>
 
-    <div class="section">
-        <b>Integrantes</b><br>
-        Barbeito, Matías Nicolás<br>
-        Cavanes, Tomás Ezequiel<br>
-        Lahan, Alberto Nicolás<br>
+    
+        Barbeito, Matías Nicolás
+        Cavanes, Tomás Ezequiel
+        Lahan, Alberto Nicolás
         Rodríguez Aguado, José Luis
-    </div>
 
-    <div class="section">
-        <b>UTN Facultad Regional Haedo</b><br>
+
+
+        UTN Facultad Regional Haedo
         Cátedra: Propulsión
-    </div>
+    
 </div>
 """,
         unsafe_allow_html=True
