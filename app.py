@@ -75,17 +75,17 @@ if menu == "Inicio":
     <div class="title">📘 TP Nº1</div>
     <div class="subtitle">DISEÑO Y OPTIMIZACIÓN DE CICLOS TERMODINÁMICOS</div>
 
-    
-        Barbeito, Matías Nicolás
-        Cavanes, Tomás Ezequiel
-        Lahan, Alberto Nicolás
+    <div class="section">
+        Barbeito, Matías Nicolás<br>
+        Cavanes, Tomás Ezequiel<br>
+        Lahan, Alberto Nicolás<br>
         Rodríguez Aguado, José Luis
+    </div>
 
-
-
-        UTN Facultad Regional Haedo
+    <div class="section">
+        UTN Facultad Regional Haedo<br>
         Cátedra: Propulsión
-    
+    </div>
 </div>
 """,
         unsafe_allow_html=True
@@ -99,10 +99,7 @@ else:
     st.title("🔧 Simulación de ciclos termodinámicos")
     st.markdown("## ⚙️ Configuración del problema")
 
-    # =========================
     # ENTRADAS
-    # =========================
-
     st.sidebar.header("🌍 Condiciones ambientales")
     alt = st.sidebar.number_input("Altitud [m]", value=0.0)
     T1 = st.sidebar.number_input("Temperatura [K]", value=288.0)
@@ -119,19 +116,9 @@ else:
     else:
         rc = None
 
-    st.sidebar.header("🏎️ Motor")
-    cilindrada = st.sidebar.number_input("Cilindrada [L]", value=2.0)
-    n_cil = st.sidebar.number_input("Número de cilindros", value=4)
-    rpm = st.sidebar.number_input("RPM", value=3000)
-    afr = st.sidebar.number_input("Relación aire-combustible", value=14.7)
-
-    # =========================
     # CALCULOS
-    # =========================
-
     R = 287
     cv = R / (gamma - 1)
-
     v1 = R * T1 / P1
 
     if ciclo == "Otto":
@@ -176,30 +163,58 @@ else:
     wnet = qin - qout
     eta = wnet / qin
 
-    Pmax = max(P1, P2, P3, P4)
-    Tmax = max(T1, T2, T3, T4)
-    pme = wnet / (v1 - v2)
+    # RESULTADOS
+    st.markdown("## 📊 Resultados")
 
-    df = pd.DataFrame({
-        "Estado": [1, 2, 3, 4],
-        "T [K]": [T1, T2, T3, T4],
-        "P [Pa]": [P1, P2, P3, P4],
-        "v [m³/kg]": [v1, v2, v3, v4]
-    })
+    st.write(f"Rendimiento: {eta*100:.2f}%")
+    st.write(f"Trabajo neto: {wnet/1e6:.2f} MJ/kg")
 
-    st.markdown("---")
-    st.markdown("## 📊 Resultados del ciclo")
+    # =========================
+    # DIAGRAMA P-v
+    # =========================
 
-    col1, col2 = st.columns(2)
+    v_12 = np.linspace(v1, v2, 100)
+    P_12 = P1 * (v1 / v_12)**gamma
 
-    with col1:
-        st.subheader("Estados termodinámicos")
-        st.dataframe(df)
+    v_34 = np.linspace(v3, v4, 100)
+    P_34 = P3 * (v3 / v_34)**gamma
 
-    with col2:
-        st.subheader("Parámetros")
-        st.write(f"Rendimiento: {eta*100:.2f}%")
-        st.write(f"Trabajo neto: {wnet/1e6:.2f} MJ/kg")
-        st.write(f"Presión máxima: {Pmax:.0f} Pa")
-        st.write(f"Temperatura máxima: {Tmax:.0f} K")
-        st.write(f"Presión media efectiva: {pme:.0f} Pa")
+    fig1, ax1 = plt.subplots()
+
+    ax1.plot(v_12, P_12, label="1-2 Compresión")
+    ax1.plot([v2, v3], [P2, P3], label="2-3 Calentamiento")
+    ax1.plot(v_34, P_34, label="3-4 Expansión")
+    ax1.plot([v4, v1], [P4, P1], label="4-1 Rechazo")
+
+    ax1.set_xlabel("Volumen específico")
+    ax1.set_ylabel("Presión")
+    ax1.set_title("Diagrama P-v")
+    ax1.legend()
+
+    st.pyplot(fig1)
+
+    # =========================
+    # DIAGRAMA T-s
+    # =========================
+
+    def ds(Ta, Tb, va, vb):
+        return cv*np.log(Tb/Ta) + R*np.log(vb/va)
+
+    s1 = 0
+    s2 = s1 + ds(T1, T2, v1, v2)
+    s3 = s2 + ds(T2, T3, v2, v3)
+    s4 = s3 + ds(T3, T4, v3, v4)
+
+    fig2, ax2 = plt.subplots()
+
+    ax2.plot([s1, s2], [T1, T2], label="1-2")
+    ax2.plot([s2, s3], [T2, T3], label="2-3")
+    ax2.plot([s3, s4], [T3, T4], label="3-4")
+    ax2.plot([s4, s1], [T4, T1], label="4-1")
+
+    ax2.set_xlabel("Entropía")
+    ax2.set_ylabel("Temperatura")
+    ax2.set_title("Diagrama T-s")
+    ax2.legend()
+
+    st.pyplot(fig2)
